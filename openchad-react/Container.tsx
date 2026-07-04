@@ -51,7 +51,15 @@ const TabItem = React.memo(({ children, isOpened }: { children: React.ReactNode,
       setLoaded(true);
     }
   }, [isOpened])
-  return <div className="w-full h-full">
+  return <div onContextMenu={(e) => {
+    const target = e.target as HTMLElement;
+    const allowed =
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target.isContentEditable;
+
+    if (!allowed) e.preventDefault();
+  }} className="w-full h-full">
     {
       loaded ?
         children
@@ -654,15 +662,16 @@ export default function Container({ Apps }: { Apps: Project }) {
     </motion.div>
   }
   return (
-    <div>
+    <div onContextMenu={(e) => {
+      const target = e.target as HTMLElement;
+      const allowed =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target.isContentEditable;
+
+      if (!allowed) e.preventDefault();
+    }}>
       {isTauri && <div data-tauri-drag-region className='absolute top-0 w-full h-[2.5vh]  left-0 bg-transparent' style={{ zIndex: 10 }} />}
-      <div
-        contentEditable
-        style={{
-          zIndex: -99999,
-        }}
-        className='opacity-0 absolute select-none pointer-events-none'
-      />
       <motion.div
         animate={{
           opacity: isSearchChatOpen ? 1 : 0,
@@ -698,7 +707,15 @@ export default function Container({ Apps }: { Apps: Project }) {
           <div className='w-full h-[800px]'></div>
         </div>
       </motion.div>
-      <div ref={vieweportRef} id="app"
+      <div ref={vieweportRef} onContextMenu={(e) => {
+        const target = e.target as HTMLElement;
+        const allowed =
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          target.isContentEditable;
+
+        if (!allowed) e.preventDefault();
+      }}
         className={clsx(
           "flex bg-[hsl(var(--bg))]  h-screen overflow-hidden",
           currentLayout === "rightToLeft" && 'flex-row-reverse',
@@ -726,23 +743,52 @@ export default function Container({ Apps }: { Apps: Project }) {
             layout={snaptheme.layout}
             theme={snaptheme.theme}
             settings={settings}
-            {...(Apps.repository && {repository: Apps.repository})}
+            {...(Apps.repository && { repository: Apps.repository })}
           />
         </aside>
         <div
+          onContextMenu={(e) => {
+            const target = e.target as HTMLElement;
+            const allowed =
+              target instanceof HTMLInputElement ||
+              target instanceof HTMLTextAreaElement ||
+              target.isContentEditable;
+
+            if (!allowed) e.preventDefault();
+          }}
           className="flex w-full relative h-full" style={
             {
               boxShadow: "var(--kotakshadow)",
             }
           }>
           {/*  */}
-          <div className={clsx(
-            "w-full overflow-hidden",
-            isTauri && "pt-1.5",
-            "h-[calc(100%-50px)] md:h-full"
-          )}>
+          <div
+            onContextMenu={(e) => {
+              const target = e.target as HTMLElement;
+              const allowed =
+                target instanceof HTMLInputElement ||
+                target instanceof HTMLTextAreaElement ||
+                target.isContentEditable;
+
+              if (!allowed) e.preventDefault();
+            }}
+            className={clsx(
+              "w-full overflow-hidden",
+              isTauri && "pt-1.5",
+              "h-[calc(100%-50px)] md:h-full"
+            )}>
             <div
               id="app"
+              ref={vieweportRef}
+              onContextMenu={(e) => {
+                const target = e.target as HTMLElement;
+                const allowed =
+                  target instanceof HTMLInputElement ||
+                  target instanceof HTMLTextAreaElement ||
+                  target.isContentEditable;
+
+                if (!allowed) e.preventDefault();
+              }}
               className={
                 clsx(
                   "flex",
